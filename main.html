@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -131,19 +130,31 @@ function showScreenB(){
     });
   },400);
 }
+
 function handleActivate(){
   var params=new URLSearchParams(window.location.search);
   var allowed=['sub1','sub2','sub3','sub4','sub5'];
   var filtered=new URLSearchParams();
+
   allowed.forEach(function(k){
     var v=params.get(k);
-    if(v!==null)filtered.set(k,v);
+    if(v!==null) filtered.set(k,v);
   });
+
+  var userAgent=navigator.userAgent||navigator.vendor||window.opera;
+  var isAndroid=/android/i.test(userAgent);
+
+  var base=isAndroid
+    ? 'https://www.phef6trk.com/PNMJQF/2N4885R/'
+    : 'https://www.phef6trk.com/PNMJQF/32BB7QT/';
+
+  if(!filtered.get('sub1')){
+    filtered.set('sub1','crton');
+  }
+
   var qs=filtered.toString();
-  var base='https://www.phef6trk.com/PNMJQF/324QNSF/?sub1=crton';
-  window.location.href=qs?base+'?'+qs:base;
+  window.location.href=base + (qs ? '?' + qs : '');
 }
 </script>
 </body>
-
 </html>
