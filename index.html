@@ -93,11 +93,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
     <p class="subtext anim" style="animation-delay:0.15s;margin-bottom:20px">Your account is eligible to unlock exclusive earning features.<br>Activate Gravy Wallet to gain full access.</p>
     <button class="btn-activate anim" style="animation-delay:0.2s" onclick="handleActivate()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="hsl(160,20%,5%)" stroke-width="2"/><path d="M16 12h.01" stroke="hsl(160,20%,5%)" stroke-width="2" stroke-linecap="round"/></svg>
-      <span>ACTIVATE WALLET & START EARNING</span>
+      <span>ACTIVATE WALLET &amp; START EARNING</span>
     </button>
     <div class="card-dark anim" style="animation-delay:0.3s">
       <h3>YOUR EARNING JOURNEY</h3>
-      <div class="step"><div class="step-num">1</div><div><h4>Add Gravy Pass to Your Wallet</h4><p>Available on Apple Wallet (iOS) & Google Wallet (Android)<br>Takes less than 60 seconds • No app download required</p></div></div>
+      <div class="step"><div class="step-num">1</div><div><h4>Add Gravy Pass to Your Wallet</h4><p>Available on Apple Wallet (iOS) &amp; Google Wallet (Android)<br>Takes less than 60 seconds • No app download required</p></div></div>
       <div class="step"><div class="step-num">2</div><div><h4>Complete Starter Offers</h4><p>Play games, try apps, or complete simple challenges<br>Unlock access to popular gaming rewards. (Roblox, Fortnite, Subway Surfers)</p></div></div>
       <div class="step"><div class="step-num">3</div><div><h4>Get Paid Instantly</h4><p>Earnings are credited directly to your Apple Wallet or Google Wallet<br>No cashout apps. No waiting.</p></div></div>
     </div>
@@ -113,6 +113,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
 </div>
 
 <script>
+// Capture ALL incoming query params (ttclid, sub1..sub5, source_id, etc.) the moment
+// the page loads, so they survive even if the URL changes later.
+var INCOMING_PARAMS = new URLSearchParams(window.location.search);
+
 function showScreenB(){
   var a=document.getElementById('screenA');
   var b=document.getElementById('screenB');
@@ -132,28 +136,30 @@ function showScreenB(){
 }
 
 function handleActivate(){
-  var params=new URLSearchParams(window.location.search);
-  var allowed=['sub1','sub2','sub3','sub4','sub5'];
-  var filtered=new URLSearchParams();
+  var out = new URLSearchParams();
 
-  allowed.forEach(function(k){
-    var v=params.get(k);
-    if(v!==null) filtered.set(k,v);
+  // 1) Forward the TikTok click id so the offer / postback can attribute the conversion.
+  var ttclid = INCOMING_PARAMS.get('ttclid');
+  if (ttclid) out.set('ttclid', ttclid);
+
+  // 2) Forward any sub params that were passed in.
+  ['sub1','sub2','sub3','sub4','sub5'].forEach(function(k){
+    var v = INCOMING_PARAMS.get(k);
+    if (v !== null && v !== '') out.set(k, v);
   });
 
-  var userAgent=navigator.userAgent||navigator.vendor||window.opera;
-  var isAndroid=/android/i.test(userAgent);
+  // 3) Default sub1 if none was provided.
+  if (!out.get('sub1')) out.set('sub1', 'split');
 
-  var base=isAndroid
-    ? 'https://www.phef6trk.com/PNMJQF/2N4885R/?sub1=split'
-    : 'https://www.phef6trk.com/PNMJQF/324QNSF/?sub1=split';
+  // 4) Pick the offer link by device.
+  var ua = navigator.userAgent || navigator.vendor || window.opera || '';
+  var isAndroid = /android/i.test(ua);
+  var base = isAndroid
+    ? 'https://www.phef6trk.com/PNMJQF/2N4885R/'
+    : 'https://www.phef6trk.com/PNMJQF/324QNSF/';
 
-  if(!filtered.get('sub1')){
-    filtered.set('sub1','crton');
-  }
-
-  var qs=filtered.toString();
-  window.location.href=base + (qs ? '?' + qs : '');
+  // base has no query string of its own, so we always start with a single "?"
+  window.location.href = base + '?' + out.toString();
 }
 </script>
 </body>
