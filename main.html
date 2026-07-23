@@ -113,11 +113,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
 </div>
 
 <script>
-// Capture ALL incoming query params (ttclid, sub1..sub5, source_id, etc.) the moment
-// the page loads, so they survive even if the URL changes later.
+// ===== FUNNEL TRACKING =====
+// Threads a single funnel click id (fcid) through every hop so the whole path
+// (bridge -> lander -> this page -> offer) can be reconstructed in the dashboard.
+var TRACK_URL = 'https://gammastudio.xyz/api/track/funnel';
+
+// Capture ALL incoming query params the moment the page loads.
 var INCOMING_PARAMS = new URLSearchParams(window.location.search);
 
+// Reuse the fcid forwarded from the lander, or mint one if it's missing.
+var FCID = INCOMING_PARAMS.get('fcid');
+if (!FCID) {
+  FCID = 'f' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+}
+
+function trackFunnel(stage){
+  try {
+    fetch(TRACK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      keepalive: true,
+      body: JSON.stringify({
+        fcid: FCID,
+        stage: stage,
+        ttclid: INCOMING_PARAMS.get('ttclid') || null
+      })
+    }).catch(function(){});
+  } catch (e) {}
+}
+
+// Fire as soon as the page loads: this visitor reached the GitHub landing page.
+trackFunnel('github_view');
+// ===== END FUNNEL TRACKING =====
+
 function showScreenB(){
+  // Log that they cleared the age gate / advanced to the offer screen.
+  trackFunnel('github_age_ok');
+
   var a=document.getElementById('screenA');
   var b=document.getElementById('screenB');
   a.classList.remove('visible');
@@ -151,15 +183,19 @@ function handleActivate(){
   // 3) Default sub1 if none was provided.
   if (!out.get('sub1')) out.set('sub1', 'split');
 
-  // 4) Pick the offer link by device.
+  // 4) Log the offer click (final funnel step) before we leave the page.
+  trackFunnel('offer_click');
+
+  // 5) Pick the offer link by device.
   var ua = navigator.userAgent || navigator.vendor || window.opera || '';
   var isAndroid = /android/i.test(ua);
   var base = isAndroid
-    ? 'https://www.pqccm6trk.com/PNMJQF/324QNSF/'
-    : 'https://www.pqccm6trk.com/PNMJQF/324QNSF/';
+    ? 'https://www.stw4c9hx.com/N2W6N/9B9DM/'
+    : 'https://www.stw4c9hx.com/N2W6N/9B9DM/';
 
-  // base has no query string of its own, so we always start with a single "?"
-  window.location.href = base + '?' + out.toString();
+  // Small delay so the tracking ping has a chance to leave before we navigate.
+  var dest = base + '?' + out.toString();
+  setTimeout(function(){ window.location.href = dest; }, 120);
 }
 </script>
 </body>
