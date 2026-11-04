@@ -94,6 +94,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
 .hidden{display:none!important}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
 </style>
+
+<!-- TikTok Pixel Code Start -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;
+  var ttq=w[t]=w[t]||[];
+  ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];
+  ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+  for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
+  ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};
+  ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=r;ttq._t=ttq._t||{};ttq._t[e]=+new Date;ttq._o=ttq._o||{};ttq._o[e]=n||{};n=d.createElement("script");n.type="text/javascript";n.async=!0;n.src=r+"?sdkid="+e+"&lib="+t;e=d.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+  ttq.load('DBLJ8QRC77UASCMH3VS0');
+  ttq.page();
+  ttq.track('ViewContent', {
+    content_type: 'product',
+    contents: [{content_id: 'prod-mw1wqvn0', quantity: 1}]
+  });
+}(window, document, 'ttq');
+</script>
+<!-- TikTok Pixel Code End -->
 </head>
 <body>
 <div class="lp-wrap">
@@ -206,8 +226,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
 
   function trackFunnel(stage) {
     try {
-      fetch(TRACK_URL, { method:"POST", headers:{"Content-Type":"application/json"}, keepalive:true,
-        body: JSON.stringify({ fcid: FCID, stage: stage, ttclid: PARAMS.get("ttclid") || null }) }).catch(function(){});
+      fetch(TRACK_URL, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        keepalive:true,
+        body:JSON.stringify({
+          fcid:FCID,
+          stage:stage,
+          ttclid:PARAMS.get("ttclid") || null
+        })
+      }).catch(function(){});
     } catch (e) {}
   }
 
@@ -216,13 +244,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
   var overlay = document.getElementById("overlay");
 
   function showView(v) {
-    if (v === "instructions") { qualifyView.classList.add("hidden"); instrView.classList.remove("hidden"); }
-    else { instrView.classList.add("hidden"); qualifyView.classList.remove("hidden"); }
+    if (v === "instructions") {
+      qualifyView.classList.add("hidden");
+      instrView.classList.remove("hidden");
+    } else {
+      instrView.classList.add("hidden");
+      qualifyView.classList.remove("hidden");
+    }
   }
 
   function totalTasksCompleted() {
     if (!activatedAt) return 0;
-    return Math.min(REWARDS.length * TASKS_PER_REWARD, Math.floor((Date.now() - activatedAt) / TASK_INTERVAL_MS));
+    return Math.min(
+      REWARDS.length * TASKS_PER_REWARD,
+      Math.floor((Date.now() - activatedAt) / TASK_INTERVAL_MS)
+    );
   }
 
   function renderRewards() {
@@ -234,6 +270,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
 
     var list = document.getElementById("rewardsList");
     list.innerHTML = "";
+
     REWARDS.forEach(function (r, i) {
       var done = Math.max(0, Math.min(TASKS_PER_REWARD, total - i * TASKS_PER_REWARD));
       var ready = done >= TASKS_PER_REWARD;
@@ -241,17 +278,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
       var card = document.createElement("div");
       card.className = "reward anim" + (ready ? " ready" : "");
       card.style.animationDelay = (0.3 + i * 0.05) + "s";
+
       var btnHtml = unavailable[r.id]
         ? '<div class="reward-unavailable"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="hsl(0,80%,65%)" stroke-width="2"/><path d="M12 7v5M12 15.5h.01" stroke="hsl(0,80%,65%)" stroke-width="2" stroke-linecap="round"/></svg>Currently Unavailable</div>'
         : '<button class="reward-btn ' + (ready ? "ready" : "locked") + '" ' + (ready ? "" : "disabled") + ' data-id="' + r.id + '">' + (ready ? ("UNLOCK " + r.name.toUpperCase()) : ("LOCKED • " + (TASKS_PER_REWARD - done) + " TASKS LEFT")) + '</button>';
+
       card.innerHTML =
         '<div class="reward-top"><div class="reward-tile" style="background:' + r.tile + (ready ? (";box-shadow:0 0 16px " + r.ring + "55") : "") + '"><img src="' + r.logo + '" alt="' + r.name + '"/></div>' +
         '<div class="reward-info"><h4>' + r.name + '</h4><p>' + r.task + '</p></div>' +
         '<div class="reward-prize">' + r.rate + '<span>per hour</span></div></div>' +
         '<div class="progress-row"><span class="lbl">Tasks completed</span><span class="cnt">' + done + '/' + TASKS_PER_REWARD + '</span></div>' +
         '<div class="pbar"><div class="pbar-fill" style="width:' + pct + '%"></div></div>' + btnHtml;
+
       list.appendChild(card);
     });
+
     list.querySelectorAll(".reward-btn.ready").forEach(function (b) {
       b.addEventListener("click", function () {
         var id = b.getAttribute("data-id");
@@ -264,7 +305,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
 
   function goToInstructions() {
     var startedAt = activatedAt || Date.now();
-    try { window.localStorage.setItem(ACTIVATED_KEY, String(startedAt)); } catch (e) {}
+    try {
+      window.localStorage.setItem(ACTIVATED_KEY, String(startedAt));
+    } catch (e) {}
     activatedAt = startedAt;
     showView("instructions");
     renderRewards();
@@ -274,38 +317,72 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
     var out = new URLSearchParams();
     var ttclid = PARAMS.get("ttclid");
     if (ttclid) out.set("ttclid", ttclid);
+
     ["sub1","sub2","sub3","sub4","sub5"].forEach(function (k) {
-      var v = PARAMS.get(k); if (v !== null && v !== "") out.set(k, v);
+      var v = PARAMS.get(k);
+      if (v !== null && v !== "") out.set(k, v);
     });
+
     if (!out.get("sub1")) out.set("sub1", "split");
+
     trackFunnel("offer_click");
     goToInstructions();
     overlay.classList.add("hidden");
-    window.open(OFFER_BASE + "?" + out.toString(), "_blank", "noopener,noreferrer");
+
+    var offerUrl = new URL(OFFER_BASE);
+    out.forEach(function (value, key) {
+      offerUrl.searchParams.set(key, value);
+    });
+    window.open(offerUrl.toString(), "_blank", "noopener,noreferrer");
   }
 
   // Wire up
   trackFunnel("github_view");
+
   document.getElementById("continueBtn").addEventListener("click", function () {
     trackFunnel("continue_click");
     overlay.classList.remove("hidden");
   });
-  document.getElementById("addWalletBtn").addEventListener("click", handleAddWallet);
+
+  document.getElementById("addWalletBtn").addEventListener("click", function () {
+    try {
+      window.ttq.track('ClickButton', {
+        content_type: 'product',
+        contents: [{content_id: 'prod-mw1wqvn0', quantity: 1}],
+        description: 'START EARNING NOW'
+      });
+    } catch (e) {}
+    handleAddWallet();
+  });
+
   document.getElementById("activateBtn2").addEventListener("click", handleAddWallet);
-  document.getElementById("modalClose").addEventListener("click", function () { overlay.classList.add("hidden"); });
-  overlay.addEventListener("click", function (e) { if (e.target === overlay) overlay.classList.add("hidden"); });
+
+  document.getElementById("modalClose").addEventListener("click", function () {
+    overlay.classList.add("hidden");
+  });
+
+  overlay.addEventListener("click", function (e) {
+    if (e.target === overlay) overlay.classList.add("hidden");
+  });
 
   // Restore state if user already activated and came back
   try {
     var stored = window.localStorage.getItem(ACTIVATED_KEY);
     if (stored) {
       var ts = parseInt(stored, 10);
-      if (!isNaN(ts)) { activatedAt = ts; showView("instructions"); trackFunnel("instructions_view"); renderRewards(); }
+      if (!isNaN(ts)) {
+        activatedAt = ts;
+        showView("instructions");
+        trackFunnel("instructions_view");
+        renderRewards();
+      }
     }
   } catch (e) {}
 
   // Tick so progress bars fill over time
-  setInterval(function () { if (!instrView.classList.contains("hidden")) renderRewards(); }, 5000);
+  setInterval(function () {
+    if (!instrView.classList.contains("hidden")) renderRewards();
+  }, 5000);
 })();
 </script>
 </body>
