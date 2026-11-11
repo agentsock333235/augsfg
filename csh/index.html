@@ -46,7 +46,7 @@ body {
   background: var(--bg); color: var(--text);
   font-family: var(--font); font-size: 16px; line-height: 1.5;
   -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%;
-  min-height: 100vh; overflow-x: hidden;
+  height: 100vh; height: 100dvh; overflow: hidden;
   display: flex; flex-direction: column;
 }
 a { text-decoration: none; color: inherit; }
@@ -59,15 +59,15 @@ img { display: block; }
 @keyframes sheen { 0% { left: -60%; } 22% { left: 130%; } 100% { left: 130%; } }
 @keyframes halo { 0%, 100% { box-shadow: 0 16px 40px -10px var(--xmas-glow), 0 0 0 0 rgba(183, 35, 67, 0.4); } 50% { box-shadow: 0 16px 40px -10px var(--xmas-glow), 0 0 0 12px rgba(183, 35, 67, 0); } }
 
-.wrap { flex: 1; width: 100%; max-width: 480px; margin: 0 auto; padding: 20px 16px 18px; display: flex; flex-direction: column; }
-.stage { margin: auto 0; }
+.wrap { flex: 1; width: 100%; max-width: 480px; margin: 0 auto; padding: clamp(12px, 2.4vh, 20px) 16px clamp(10px, 1.8vh, 18px); display: flex; flex-direction: column; min-height: 0; }
+.stage { flex: 1; display: flex; flex-direction: column; justify-content: center; min-height: 0; }
 
 /* ---------- Legal ---------- */
-.legal { margin-top: 26px; text-align: center; font-size: 11px; line-height: 1.5; color: var(--dim); }
+.legal { flex-shrink: 0; margin-top: clamp(12px, 2.2vh, 26px); text-align: center; font-size: 11px; line-height: 1.5; color: var(--dim); }
 
 /* ---------- Hero (the CashApp bonus section) ---------- */
 .hero {
-  position: relative; padding: 30px 22px 28px; overflow: hidden; text-align: center;
+  position: relative; padding: clamp(16px, 3vh, 30px) 22px clamp(14px, 2.6vh, 28px); overflow: hidden; text-align: center;
   background:
     radial-gradient(circle at 16px 15px, rgba(238, 249, 245, 0.2) 1px, transparent 1.7px) 0 0 / 72px 79px,
     radial-gradient(circle at 34px 28px, rgba(238, 249, 245, 0.12) 1px, transparent 1.6px) 0 0 / 91px 101px,
@@ -97,12 +97,12 @@ img { display: block; }
 
 .logo-tile img { width: 100%; height: 100%; object-fit: cover; }
 .logo-tile {
-  width: 92px; height: 92px; margin: 0 auto 18px; border-radius: 23px; overflow: hidden;
+  width: clamp(44px, 9vh, 92px); height: clamp(44px, 9vh, 92px); margin: 0 auto clamp(10px, 1.8vh, 18px); border-radius: clamp(12px, 2.4vh, 23px); overflow: hidden;
   background: var(--ca); box-shadow: 0 16px 38px -8px var(--ca-glow);
   animation: float 4s ease-in-out infinite;
 }
 .pill {
-  display: inline-flex; align-items: center; gap: 7px; margin-bottom: 20px;
+  display: inline-flex; align-items: center; gap: 7px; margin-bottom: clamp(10px, 2vh, 20px);
   padding: 6px 13px 6px 10px; border-radius: var(--pill);
   background: var(--gold-soft); border: 1px solid var(--gold-line);
   font-size: 12.5px; font-weight: 700; color: var(--gold-hi);
@@ -110,26 +110,26 @@ img { display: block; }
 .pill svg { width: 14px; height: 14px; flex-shrink: 0; }
 .credit-label { font-size: 10.5px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
 .amount {
-  font-size: 104px; font-weight: 900; line-height: 0.95; letter-spacing: -0.05em; color: #fff;
+  font-size: clamp(56px, 11.5vh, 104px); font-weight: 900; line-height: 0.95; letter-spacing: -0.05em; color: #fff;
   text-shadow: 0 10px 40px rgba(239, 195, 108, 0.3);
 }
-.amount sup { font-size: 52px; font-weight: 900; vertical-align: top; margin-right: 2px; line-height: 1; position: relative; top: 10px; }
-.amount-sub { font-size: 15.5px; color: var(--text); margin-top: 14px; font-weight: 500; max-width: 300px; margin-inline: auto; }
+.amount sup { font-size: clamp(28px, 5.8vh, 52px); font-weight: 900; vertical-align: top; margin-right: 2px; line-height: 1; position: relative; top: clamp(4px, 1.7vh, 10px); }
+.amount-sub { font-size: clamp(13.5px, 2.6vh, 15.5px); color: var(--text); margin-top: clamp(8px, 1.6vh, 14px); font-weight: 500; max-width: 300px; margin-inline: auto; }
 .live {
-  display: inline-flex; align-items: center; gap: 8px; margin-top: 18px; padding: 8px 15px;
+  display: inline-flex; align-items: center; gap: 8px; margin-top: clamp(9px, 1.8vh, 18px); padding: clamp(6px, 1.2vh, 8px) 15px;
   background: var(--ca-soft); border: 1px solid var(--ca-line); border-radius: var(--pill);
-  color: var(--ca); font-size: 13px; font-weight: 600;
+  color: var(--ca); font-size: clamp(12px, 2.2vh, 13px); font-weight: 600;
 }
 .live .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ca); box-shadow: 0 0 10px var(--ca); animation: pulse 1.6s ease-in-out infinite; }
 .live b { font-family: var(--mono); font-weight: 700; }
 
 /* ---------- The one button ---------- */
-.cta-wrap { margin-top: 20px; }
+.cta-wrap { margin-top: clamp(12px, 2.4vh, 20px); }
 .cta {
   position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 9px;
-  width: 100%; padding: 20px 24px; border-radius: 16px; text-decoration: none;
+  width: 100%; padding: clamp(14px, 2.6vh, 20px) 24px; border-radius: 16px; text-decoration: none;
   background: linear-gradient(180deg, var(--xmas-hi) 0%, var(--xmas) 100%);
-  color: #fff; font-weight: 800; font-size: 18px; letter-spacing: 0.04em; text-transform: uppercase;
+  color: #fff; font-weight: 800; font-size: clamp(16px, 3vh, 18px); letter-spacing: 0.04em; text-transform: uppercase;
   animation: halo 2.6s ease-in-out infinite;
   transition: transform 0.14s ease, filter 0.2s;
 }
@@ -140,25 +140,25 @@ img { display: block; }
   background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.34), transparent);
   transform: skewX(-18deg); animation: sheen 4.4s ease-in-out 1.2s infinite; pointer-events: none;
 }
-.cta-sub { font-size: 12.5px; color: var(--muted); margin-top: 13px; font-weight: 600; text-align: center; }
+.cta-sub { font-size: clamp(11.5px, 2.2vh, 12.5px); color: var(--muted); margin-top: clamp(8px, 1.5vh, 13px); font-weight: 600; text-align: center; }
 .cta-sub b { color: var(--ca); font-weight: 700; }
 
 /* ---------- Final step (returning user) ---------- */
 body.is-final #heroView, body.is-final #claimWrap { display: none; }
-.logo-pair { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 auto 12px; }
-.logo-pair .logo-tile { width: 54px; height: 54px; margin: 0; border-radius: 15px; animation: none; }
+.logo-pair { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0 auto clamp(8px, 1.6vh, 12px); }
+.logo-pair .logo-tile { width: clamp(40px, 7vh, 54px); height: clamp(40px, 7vh, 54px); margin: 0; border-radius: clamp(11px, 1.8vh, 15px); animation: none; }
 .logo-pair .x { color: var(--muted); font-size: 20px; font-weight: 300; line-height: 1; }
-.final-partner { font-size: 10.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 18px; }
-.final-h { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; margin-top: 16px; }
-.final-sub { font-size: 14.5px; color: var(--text); margin-top: 8px; font-weight: 500; max-width: 300px; margin-inline: auto; }
+.final-partner { font-size: 10.5px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 clamp(10px, 2vh, 18px); }
+.final-h { font-size: clamp(17px, 3.4vh, 21px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; margin-top: clamp(10px, 1.8vh, 16px); }
+.final-sub { font-size: clamp(12.5px, 2.4vh, 14.5px); color: var(--text); margin-top: clamp(6px, 1.2vh, 8px); font-weight: 500; max-width: 300px; margin-inline: auto; }
 
 /* ---------- Task progress (final step) ---------- */
-.task-meter { margin: 20px auto 0; max-width: 300px; }
-.task-count { font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 9px; }
+.task-meter { margin: clamp(12px, 2.2vh, 20px) auto 0; max-width: 300px; }
+.task-count { font-size: clamp(11.5px, 2.2vh, 12.5px); font-weight: 700; color: var(--text); margin-bottom: clamp(7px, 1.4vh, 9px); }
 .task-count b { color: var(--ca); font-weight: 800; }
 .task-bar { height: 8px; border-radius: 99px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
 .task-bar span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--ca) 0%, #7CF2A8 100%); transition: width 0.6s ease; }
-.task-hint { font-size: 11.5px; color: var(--dim); margin-top: 9px; font-weight: 600; }
+.task-hint { font-size: clamp(10.5px, 2vh, 11.5px); color: var(--dim); margin-top: clamp(7px, 1.4vh, 9px); font-weight: 600; }
 .unavailable { display: none; }
 body.is-unavailable #finalAmount, body.is-unavailable #finalCreditLabel,
 body.is-unavailable #taskMeter, body.is-unavailable #finalTitle,
@@ -233,6 +233,22 @@ body.is-unavailable .unavailable { display: block; }
 .sheet-btn:hover { filter: brightness(1.06); }
 .sheet-btn:active { transform: scale(0.985); }
 .sheet-note { text-align: center; font-size: 12px; color: var(--dim); margin-top: 10px; font-weight: 600; }
+
+/* ---------- Redirecting state (after "Start Now") ---------- */
+@keyframes spin { to { transform: rotate(360deg); } }
+.sheet-redirect { padding: 22px 0 6px; text-align: center; }
+.sheet-redirect[hidden] { display: none; }
+.sheet-redirect h2 { font-size: 21px; font-weight: 800; letter-spacing: -0.02em; }
+.sheet-redirect .sheet-body { margin-top: 10px; }
+.spinner {
+  display: block; width: 34px; height: 34px; margin: 0 auto 18px;
+  border: 3px solid rgba(0, 214, 79, 0.22); border-top-color: var(--ca);
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+.sheet-fallback {
+  display: inline-block; margin-top: 16px; font-size: 13px; font-weight: 700;
+  color: var(--ca); text-decoration: underline; text-underline-offset: 3px;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
@@ -325,7 +341,7 @@ body.is-unavailable .unavailable { display: block; }
     <p class="sheet-partner">Cash App partner: Gravypass</p>
     <button type="button" class="sheet-close" data-close aria-label="Close"><svg width="13" height="13"><use href="#i-x"/></svg></button>
 
-    <div class="phase" data-phase="1">
+    <div class="phase" id="sheetPhase" data-phase="1">
       <div class="eyebrow">Gravy Pass</div>
       <h2 id="sheetTitle1">Start using Gravypass</h2>
       <p class="sheet-body">Add the pass, open it, start the survey or games, finish it and come back here to activate your <b>$100 CashApp reward</b>.</p>
@@ -350,6 +366,13 @@ body.is-unavailable .unavailable { display: block; }
 
       <a class="sheet-btn" id="passBtn" href="#" rel="noopener">Start Now →</a>
       <p class="sheet-note">Takes 10 seconds — no card needed</p>
+    </div>
+
+    <div class="sheet-redirect" id="sheetRedirect" hidden role="status" aria-live="polite">
+      <span class="spinner" aria-hidden="true"></span>
+      <h2>Taking you to Gravypass</h2>
+      <p class="sheet-body">Add the pass, play one quick game, then come back here to finish your <b>$100 CashApp claim</b>.</p>
+      <a class="sheet-fallback" id="fallbackBtn" href="#" rel="noopener">Continue to Gravypass &rarr;</a>
     </div>
   </div>
 </div>
@@ -457,7 +480,24 @@ body.is-unavailable .unavailable { display: block; }
     if (e.key === "Escape" && sheet.classList.contains("open")) closeSheet();
   });
 
-  passBtn.addEventListener("click", function () { markLeft(); });
+// ---- Redirecting state -------------------------------------------------
+  // Clicking "Start Now" flips the sheet into its redirecting state and swaps
+  // the page behind it to the final step, so the flow visibly moves on before
+  // the browser leaves for the offer.
+  var sheetRedirect = document.getElementById("sheetRedirect");
+  var sheetPhase = document.getElementById("sheetPhase");
+  var fallbackBtn = document.getElementById("fallbackBtn");
+  fallbackBtn.href = CASHAPP_URL;
+
+  passBtn.addEventListener("click", function (e) {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    markLeft();
+    showFinal();
+    sheetPhase.hidden = true;
+    sheetRedirect.hidden = false;
+    setTimeout(function () { window.location.href = CASHAPP_URL; }, 900);
+  });
 
   // Coming back from the offer is the signal that the final step is due.
   document.addEventListener("visibilitychange", function () {
