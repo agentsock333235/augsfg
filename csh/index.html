@@ -159,11 +159,6 @@ body.is-final #heroView, body.is-final #claimWrap { display: none; }
 .task-bar { height: 8px; border-radius: 99px; background: rgba(255, 255, 255, 0.07); overflow: hidden; }
 .task-bar span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--ca) 0%, #7CF2A8 100%); transition: width 0.6s ease; }
 .task-hint { font-size: clamp(10.5px, 2vh, 11.5px); color: var(--dim); margin-top: clamp(7px, 1.4vh, 9px); font-weight: 600; }
-.unavailable { display: none; }
-body.is-unavailable #finalAmount, body.is-unavailable #finalCreditLabel,
-body.is-unavailable #taskMeter, body.is-unavailable #finalTitle,
-body.is-unavailable #finalSub, body.is-unavailable #finalWrap { display: none; }
-body.is-unavailable .unavailable { display: block; }
 
 /* ---------- Modal ---------- */
 .overlay {
@@ -312,10 +307,6 @@ body.is-unavailable .unavailable { display: block; }
         <h2 class="final-h" id="finalTitle">Complete tasks to unlock your $100 reward</h2>
         <p class="final-sub" id="finalSub">Each task you complete moves you closer to your $100 CashApp credit.</p>
 
-        <div class="unavailable">
-          <h2 class="final-h">Currently unavailable</h2>
-          <p class="final-sub">This reward is fully claimed right now. Check back soon.</p>
-        </div>
       </div>
     </section>
 
@@ -408,7 +399,11 @@ body.is-unavailable .unavailable { display: block; }
   // The counter advances one task every 10 minutes. It is anchored to a
   // timestamp rather than a running timer, so it keeps moving while the page
   // is closed and lands on the right number after a reload.
-  var TASK_MAX = 3;
+  // Tasks that count toward the reward. The counter stops here and the page
+  // stays as it is — it never flips to a "fully claimed" state.
+  var TASK_MAX = 2;
+  // The denominator in the counter: "N of 3 tasks completed".
+  var TASK_TOTAL = 3;
   var TASK_MS = 10 * 60 * 1000;
   var TASK_START_KEY = "v2TaskStart";
   var taskNow = document.getElementById("taskNow");
@@ -429,9 +424,8 @@ body.is-unavailable .unavailable { display: block; }
   function renderTasks() {
     var n = Math.min(TASK_MAX, Math.floor((Date.now() - taskStart()) / TASK_MS));
     taskNow.textContent = String(n);
-    taskMax.textContent = String(TASK_MAX);
-    taskFill.style.width = (n / TASK_MAX * 100) + "%";
-    document.body.classList.toggle("is-unavailable", n >= TASK_MAX);
+    taskMax.textContent = String(TASK_TOTAL);
+    taskFill.style.width = (n / TASK_TOTAL * 100) + "%";
   }
   function showFinal() {
     document.body.classList.add("is-final");
@@ -441,8 +435,7 @@ body.is-unavailable .unavailable { display: block; }
     if (!ticker) ticker = setInterval(renderTasks, 15000);
   }
   finalBtn.href = CASHAPP_URL;
-  if (hasLeft()) showFinal();
-  window.addEventListener("pageshow", function () { if (hasLeft()) showFinal(); });
+  window.addEventListener("pageshow", onReturn);
 
   // ---- Live counter ------------------------------------------------------
   var live = document.getElementById("live");
@@ -497,13 +490,36 @@ body.is-unavailable .unavailable { display: block; }
     sheetPhase.hidden = true;
     sheetRedirect.hidden = false;
     setTimeout(function () { window.location.href = CASHAPP_URL; }, 900);
+    setTimeout(function () {
+      if (!document.hidden) resetSheet();
+    }, 6000);
   });
+
+// ---- Returning from the offer -------------------------------------------
+  // Safari restores the page from its back-forward cache, so the sheet has to
+  // be dismissed explicitly on the way back — otherwise the popup is still
+  // sitting on the redirecting spinner instead of the final step.
+  function resetSheet() {
+    sheet.classList.remove("open");
+    sheet.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    if (sheetPhase) sheetPhase.hidden = false;
+    if (sheetRedirect) sheetRedirect.hidden = true;
+  }
+
+  function onReturn() {
+    if (!hasLeft()) return;
+    showFinal();
+    resetSheet();
+  }
 
   // Coming back from the offer is the signal that the final step is due.
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) return;
-    if (hasLeft()) showFinal();
+    onReturn();
   });
+
+  onReturn();
 })();
 </script>
 </body>
