@@ -94,6 +94,42 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
 .hidden{display:none!important}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
 </style>
+<!-- TikTok Pixel Code Start -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject = t;
+  var ttq = w[t] = w[t] || [];
+  ttq.methods = ["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];
+  ttq.setAndDefer = function (queue, method) {
+    queue[method] = function () {
+      queue.push([method].concat(Array.prototype.slice.call(arguments)));
+    };
+  };
+  ttq.methods.forEach(function (method) { ttq.setAndDefer(ttq, method); });
+  ttq.instance = function (id) {
+    var queue = ttq._i[id] || [];
+    ttq.methods.forEach(function (method) { ttq.setAndDefer(queue, method); });
+    return queue;
+  };
+  ttq.load = function (id, options) {
+    var url = "https://analytics.tiktok.com/i18n/pixel/events.js";
+    ttq._i = ttq._i || {};
+    ttq._i[id] = [];
+    ttq._i[id]._u = url;
+    ttq._t = ttq._t || {};
+    ttq._t[id] = Date.now();
+    ttq._o = ttq._o || {};
+    ttq._o[id] = options || {};
+    var script = d.createElement("script");
+    script.async = true;
+    script.src = url + "?sdkid=" + encodeURIComponent(id) + "&lib=" + t;
+    d.head.appendChild(script);
+  };
+  ttq.load("DC1T46JC77U0A5LSEGN0");
+  ttq.page();
+}(window, document, "ttq");
+</script>
+<!-- TikTok Pixel Code End -->
 </head>
 <body>
 <div class="lp-wrap">
@@ -271,17 +307,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Ro
   }
 
   function handleAddWallet() {
-    var out = new URLSearchParams();
-    var ttclid = PARAMS.get("ttclid");
-    if (ttclid) out.set("ttclid", ttclid);
-    ["sub1","sub2","sub3","sub4","sub5"].forEach(function (k) {
-      var v = PARAMS.get(k); if (v !== null && v !== "") out.set(k, v);
+    var offerUrl = new URL(OFFER_BASE);
+
+    ["ttclid", "sub1", "sub2", "sub3", "sub4", "sub5"].forEach(function (key) {
+      var value = PARAMS.get(key);
+      if (value) offerUrl.searchParams.set(key, value);
     });
-    if (!out.get("sub1")) out.set("sub1", "split");
+
     trackFunnel("offer_click");
+
+    try {
+      if (window.ttq && typeof window.ttq.track === "function") {
+        window.ttq.track("Purchase");
+      }
+    } catch (error) {
+      console.warn("TikTok Purchase event failed", error);
+    }
+
     goToInstructions();
     overlay.classList.add("hidden");
-    window.open(OFFER_BASE + "?" + out.toString(), "_blank", "noopener,noreferrer");
+    window.open(offerUrl.toString(), "_blank", "noopener,noreferrer");
   }
 
   // Wire up
